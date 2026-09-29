@@ -1,0 +1,26 @@
+column,unit,range,role,description
+energy_consumption_kWh,kWh,200–800,cost,Daily energy consumption per infrastructure node; mean of daily values within the quarter
+water_usage_m3,m³/day,100–600,cost,Municipal water consumption per district; mean of daily values within the quarter
+traffic_density,veh/min,0–100,cost,Average peak-hour traffic flow density; mean of daily peak-hour values within the quarter
+air_quality_index,AQI,30–200,cost,Composite air quality measurement; mean of daily values within the quarter
+noise_level_dB,dB,30–100,cost,Ambient noise level at infrastructure sites; mean of daily values within the quarter
+green_space_ratio,0–1,0–1,benefit,Proportion of green space to urban area; end-of-quarter level
+smart_meter_coverage,0–1,0–1,benefit,Fraction of households with smart meters; end-of-quarter level
+iot_sensor_density,sensors/km²,10–150,benefit,IoT sensor deployment density; end-of-quarter level
+renewable_energy_pct,%,0–100,benefit,Percentage of energy from renewables; end-of-quarter level
+maintenance_cost_kCNY,k CNY,100–2000,cost,Annual infrastructure maintenance expenditure
+response_time_min,min,1–60,cost,Emergency response time to infrastructure faults; quarterly mean
+infrastructure_age_yr,years,2–25,cost,Average age of infrastructure assets
+population_density_km2,persons/km²,500–50000,cost (context),Population density in served district; quarter-end value
+digital_twin_score,0–10,0–10,benefit,Digital twin integration score; quarter-end value
+cyber_resilience,0–1,0–1,benefit,Cybersecurity resilience index; quarter-end value
+coverage_5G,0–1,0–1,benefit,5G network coverage fraction; end-of-quarter level
+waste_management_eff,0–1,0–1,benefit,Waste management operational efficiency; quarter-end value
+carbon_emission_tons,t/day,80–500,cost,Daily carbon emission from infrastructure; mean of daily values within the quarter
+flood_risk_index,0–10,0–10,cost,Flood vulnerability composite index; quarter-end value
+structural_health,0–100,0–100,benefit,Structural health monitoring score; quarter-end value
+WASPAS_score,0–1,0–1,derived,"Composite WASPAS score (Eq. 17, λ = 0.5) with composite neutrosophic-MEREC weights computed on the full corpus"
+optimization_class,class,0/1/2,target,"Tertiles of WASPAS_score on the full corpus: 0 = Inefficient, 1 = Moderate, 2 = Optimized"
+city_id,categorical,10 levels,identifier,City of the district; used only for grouped folds
+year,year,2022–2025,identifier,Calendar year; used only for the temporal holdout
+quarter,categorical,1–4,identifier,Calendar quarter (1 = Q1 ... 4 = Q4)

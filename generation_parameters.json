@@ -1,0 +1,146 @@
+{
+ "seed": 42,
+ "n_records": 2000,
+ "cities": [
+  "Shanghai",
+  "Beijing",
+  "Shenzhen",
+  "Guangzhou",
+  "Chengdu",
+  "Wuhan",
+  "Hangzhou",
+  "Tianjin",
+  "Nanjing",
+  "Xi'an"
+ ],
+ "districts_per_city": {
+  "Shanghai": 15,
+  "Beijing": 15,
+  "Shenzhen": 14,
+  "Guangzhou": 13,
+  "Chengdu": 12,
+  "Wuhan": 12,
+  "Hangzhou": 12,
+  "Tianjin": 11,
+  "Nanjing": 11,
+  "Xi'an": 10
+ },
+ "copula_pairs": [
+  [
+   "iot_sensor_density",
+   "digital_twin_score",
+   0.44
+  ],
+  [
+   "iot_sensor_density",
+   "cyber_resilience",
+   0.41
+  ],
+  [
+   "carbon_emission_tons",
+   "renewable_energy_pct",
+   -0.55
+  ],
+  [
+   "digital_twin_score",
+   "cyber_resilience",
+   0.25
+  ],
+  [
+   "energy_consumption_kWh",
+   "carbon_emission_tons",
+   0.3
+  ],
+  [
+   "coverage_5G",
+   "iot_sensor_density",
+   0.22
+  ],
+  [
+   "air_quality_index",
+   "carbon_emission_tons",
+   0.18
+  ],
+  [
+   "traffic_density",
+   "noise_level_dB",
+   0.3
+  ]
+ ],
+ "drift_sd_per_year": {
+  "default": 0.1,
+  "renewable_energy_pct": 0.4
+ },
+ "drift_city_multiplier": {
+  "Chengdu": 1.9
+ },
+ "seasonal_factors": {
+  "energy_consumption_kWh": {
+   "1": 1.03,
+   "2": 1.0,
+   "3": 1.07,
+   "4": 0.95
+  },
+  "air_quality_index": {
+   "1": 1.08,
+   "2": 0.97,
+   "3": 0.98,
+   "4": 0.97
+  }
+ },
+ "stage3_missing_rate": {
+  "energy_consumption_kWh": 0.0776,
+  "water_usage_m3": 0.0409,
+  "traffic_density": 0.0107,
+  "air_quality_index": 0.0559,
+  "noise_level_dB": 0.0184,
+  "green_space_ratio": 0.0162,
+  "smart_meter_coverage": 0.0116,
+  "iot_sensor_density": 0.0718,
+  "renewable_energy_pct": 0.0124,
+  "maintenance_cost_kCNY": 0.0476,
+  "response_time_min": 0.0443,
+  "infrastructure_age_yr": 0.0738,
+  "population_density_km2": 0.0738,
+  "digital_twin_score": 0.0745,
+  "cyber_resilience": 0.038,
+  "coverage_5G": 0.0431,
+  "waste_management_eff": 0.0678,
+  "carbon_emission_tons": 0.0184,
+  "flood_risk_index": 0.018,
+  "structural_health": 0.0745
+ },
+ "stage3_noise_cv": {
+  "energy_consumption_kWh": 0.0282,
+  "water_usage_m3": 0.1272,
+  "traffic_density": 0.0746,
+  "air_quality_index": 0.0435,
+  "noise_level_dB": 0.2927,
+  "green_space_ratio": 0.0665,
+  "smart_meter_coverage": 0.141,
+  "iot_sensor_density": 0.0917,
+  "renewable_energy_pct": 0.1575,
+  "maintenance_cost_kCNY": 0.2347,
+  "response_time_min": 0.2047,
+  "infrastructure_age_yr": 0.1801,
+  "population_density_km2": 0.163,
+  "digital_twin_score": 0.0569,
+  "cyber_resilience": 0.1327,
+  "coverage_5G": 0.2735,
+  "waste_management_eff": 0.2497,
+  "carbon_emission_tons": 0.0381,
+  "flood_risk_index": 0.2553,
+  "structural_health": 0.2519
+ },
+ "neutrosophic": {
+  "n_reference": 100.0,
+  "cv_threshold": 0.35,
+  "mad_z": 3.5,
+  "alpha": 0.85
+ },
+ "waspas_lambda": 0.5,
+ "tertile_cut_points_full_corpus": [
+  0.414855,
+  0.454008
+ ]
+}

@@ -1,0 +1,77 @@
+from common import *
+from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
+plt.rcParams['mathtext.fontset']='dejavusans'
+def box(ax,x,y,w,h,title,body,ec,fc,tc=None,fs=7.2,bfs=6.4,ls='-'):
+    ax.add_patch(FancyBboxPatch((x,y),w,h,boxstyle='round,pad=0.008,rounding_size=0.012',ec=ec,fc=fc,lw=1.0,ls=ls))
+    if body:
+        ax.text(x+w/2,y+h*0.68,title,ha='center',va='center',fontsize=fs,fontweight='bold',color=tc or ec)
+        ax.text(x+w/2,y+h*0.30,body,ha='center',va='center',fontsize=bfs,color='#222222')
+    else:
+        ax.text(x+w/2,y+h/2,title,ha='center',va='center',fontsize=fs,fontweight='bold',color=tc or ec)
+def arr(ax,p,q,c='#555555',ls='-',lw=1.0,cs='arc3'):
+    ax.add_patch(FancyArrowPatch(p,q,arrowstyle='-|>',mutation_scale=9,color=c,lw=lw,ls=ls,connectionstyle=cs,shrinkA=0,shrinkB=0))
+def canvas(w,h):
+    fig=plt.figure(figsize=(w,h)); ax=fig.add_axes([0,0,1,1]); ax.set_xlim(0,1); ax.set_ylim(0,1); ax.axis('off'); return fig,ax
+# ---------------- Figure 1
+fig,ax=canvas(7.2,6.2)
+ax.text(0.5,0.975,'Leakage-controlled MEREC–WASPAS–AI pipeline',ha='center',va='center',fontsize=9.5,fontweight='bold',color='#1f3b73')
+L=[('#2f6db5','#eaf1fb'),('#7b3fa0','#f4ecf8'),('#1c7a5a','#e8f5ef'),('#d9771f','#fdf1e6'),('#b3303a','#fbeaea'),('#3d7a2a','#edf6e9')]
+box(ax,0.16,0.84,0.68,0.095,'Layer 1: Data ingestion (semi-synthetic corpus, 2,000 district–quarter records)','20 criteria  |  identifiers city, year, quarter (fold definition only)  |  anchors.csv',*L[0])
+box(ax,0.16,0.70,0.68,0.095,'Layer 2: Fold-internal preprocessing and uncertainty statistics','Training-median imputation  |  modified z-score outliers  |  δ$_j$, CV$_j$, p$_{missing,j}$, p$_{outlier,j}$ (training partition)',*L[1])
+box(ax,0.035,0.525,0.44,0.125,'Layer 3: MEREC + neutrosophic weighting','Eqs. 1–7: removal-effect weights $w_j$\nEqs. 8–14: $T_j, I_j, F_j$ → one global vector $\\bar{w}_j$ per fold',*L[2])
+box(ax,0.53,0.525,0.44,0.125,'Layer 4: WASPAS aggregation','Eqs. 15–17: $Q_i=\\lambda Q_i^{WSM}+(1-\\lambda)Q_i^{WPM}$\nEq. 18 minimum λ* = 0.30; λ = 0.50 used',*L[3])
+box(ax,0.53,0.355,0.44,0.115,'Target definition (label pathway)','Training-partition tertile cut points τ$_1$, τ$_2$ on $Q_i$\n→ optimization_class y $\in$ {0, 1, 2}',  '#8a5a00','#fff7e0')
+box(ax,0.035,0.355,0.44,0.115,'Feature pathway (leakage-controlled)','$\\varphi_i^{LC}=[\\bar{x}_{i1},\\ldots,\\bar{x}_{in}]$, n = 20\n$Q_i$ and weight block withheld; StandardScaler (training fit)','#1f3b73','#eef2fa')
+box(ax,0.03,0.185,0.62,0.115,'Layer 5: Stacked ensemble classifier','XGBoost | LightGBM | MLP | Random Forest | Extra Trees (Eq. 20)\nout-of-fold meta-features (Eq. 21) → logistic meta-learner (Eqs. 22–23)',*L[4])
+box(ax,0.69,0.185,0.28,0.115,'Reference baseline','Exact WASPAS threshold\nrule (Eq. 25)','#555555','#f2f2f2')
+box(ax,0.16,0.03,0.68,0.10,'Layer 6: Decision output and evaluation','Class and class probabilities  |  protocols P1–P5  |  calibration  |  degraded-input scenarios',*L[5])
+arr(ax,(0.5,0.84),(0.5,0.795)); arr(ax,(0.35,0.70),(0.25,0.65)); arr(ax,(0.65,0.70),(0.75,0.65))
+arr(ax,(0.47,0.59),(0.53,0.59),c=L[2][0]); ax.text(0.50,0.605,'$\\bar{w}_j$',ha='center',fontsize=6.5,color=L[2][0])
+arr(ax,(0.75,0.525),(0.75,0.47)); ax.plot([0.16,0.012,0.012],[0.75,0.75,0.41],color='#1f3b73',lw=1.0); arr(ax,(0.012,0.41),(0.03,0.41),c='#1f3b73')
+ax.text(0.004,0.58,'normalised criteria',fontsize=5.6,color='#1f3b73',ha='center',rotation=90,va='center',bbox=dict(fc='white',ec='none',pad=0.5))
+arr(ax,(0.25,0.355),(0.25,0.30)); arr(ax,(0.66,0.355),(0.50,0.30),c='#8a5a00'); ax.text(0.60,0.325,'labels y',fontsize=6,color='#8a5a00')
+arr(ax,(0.83,0.355),(0.83,0.30),c='#8a5a00',ls='--')
+ax.plot([0.47,0.53],[0.435,0.435],color='#b3303a',lw=1.0,ls=':'); ax.text(0.50,0.445,'×',ha='center',fontsize=8,color='#b3303a')
+ax.text(0.50,0.405,'$Q_i$ not a\nfeature',ha='center',fontsize=5.3,color='#b3303a')
+arr(ax,(0.34,0.185),(0.40,0.13)); arr(ax,(0.83,0.185),(0.70,0.13),c='#555555',ls='--')
+save(fig,'Figure1')
+# ---------------- Figure 2
+fig,ax=canvas(7.2,6.4)
+ax.text(0.5,0.975,'MEREC weight computation and neutrosophic adjustment (within each training partition)',ha='center',fontsize=9,fontweight='bold',color='#8a3b12')
+box(ax,0.2,0.855,0.6,0.085,'Step 1: Decision matrix','$X=[x_{ij}]_{m\\times n}$, m alternatives (training records), n = 20 criteria   (Eq. 1)','#2f6db5','#eaf1fb')
+box(ax,0.2,0.725,0.6,0.095,'Step 2: MEREC normalisation','benefit: $n_{ij}=\\mathrm{min}_{i}\\, x_{ij}/x_{ij}$  (Eq. 2)     cost: $n_{ij}=x_{ij}/\\mathrm{max}_{i}\\, x_{ij}$  (Eq. 3)','#b0306a','#fbeaf2')
+box(ax,0.02,0.57,0.46,0.10,'Step 3a: Overall performance','$S_i=\\ln\\!\\left(1+\\frac{1}{n}\\sum_{j=1}^{n}|\\ln n_{ij}|\\right)$   (Eq. 4)','#2e7d32','#edf7ee')
+box(ax,0.52,0.57,0.46,0.10,'Step 3b: Performance with criterion j removed',"$S'_{ij}=\\ln\\!\\left(1+\\frac{1}{n}\\sum_{k\\neq j}|\\ln n_{ik}|\\right)$   (Eq. 5)",'#d9771f','#fdf1e6')
+box(ax,0.2,0.445,0.6,0.08,'Step 4: Removal effect',"$E_j=\\sum_{i=1}^{m}|S'_{ij}-S_i|$   (Eq. 6)",'#6a3d9a','#f3edf9')
+box(ax,0.2,0.335,0.6,0.08,'Step 5: MEREC weights','$w_j=E_j/\\sum_{k=1}^{n}E_k$,  $\\sum_j w_j=1$   (Eq. 7)','#00838f','#e6f6f7')
+box(ax,0.02,0.035,0.96,0.26,'','','#c0392b','#fdeeee')
+ax.text(0.5,0.27,'Step 6: Neutrosophic adjustment — criterion-level statistics, one global weight vector per fold',ha='center',fontsize=7.2,fontweight='bold',color='#c0392b')
+ax.text(0.05,0.215,'SVNN: $\\tilde{w}_j=\\langle T_j,I_j,F_j\\rangle$  (Eq. 8)',fontsize=6.5)
+ax.text(0.05,0.165,'$T_j=1-\\exp(-\\delta_j\\,\\bar{n}_{sensor,j}/n_{reference})$  (Eq. 11)',fontsize=6.5)
+ax.text(0.05,0.115,'$I_j=\\min(CV_j/CV_{threshold},1)$  (Eq. 12)',fontsize=6.5)
+ax.text(0.05,0.065,'$F_j=\\min(p_{missing,j}+p_{outlier,j},1)$  (Eq. 13)',fontsize=6.5)
+ax.text(0.53,0.215,'$w^{*}_j=T_j(1-I_j/2)(1-F_j/2)\\,w_j$  (Eq. 9)',fontsize=6.5)
+ax.text(0.53,0.165,'$\\hat{w}_j=w^{*}_j/\\sum_k w^{*}_k$  (Eq. 10)',fontsize=6.5)
+ax.text(0.53,0.115,'$\\bar{w}_j=\\alpha\\hat{w}_j+(1-\\alpha)/n$, α = 0.85  (Eq. 14)',fontsize=6.5)
+ax.text(0.53,0.065,'$\\bar{n}_{sensor,j}$: training median; identical for all records',fontsize=6.0,color='#555555')
+for a,b in [((0.5,0.855),(0.5,0.82)),((0.5,0.725),(0.5,0.725))]: pass
+arr(ax,(0.5,0.855),(0.5,0.82)); arr(ax,(0.38,0.725),(0.25,0.67)); arr(ax,(0.62,0.725),(0.75,0.67))
+arr(ax,(0.25,0.57),(0.40,0.525)); arr(ax,(0.75,0.57),(0.60,0.525)); arr(ax,(0.5,0.445),(0.5,0.415)); arr(ax,(0.5,0.335),(0.5,0.295))
+save(fig,'Figure2')
+# ---------------- Figure 3
+fig,ax=canvas(7.2,5.0)
+ax.text(0.5,0.965,'WASPAS aggregation, target definition and leakage-controlled ensemble',ha='center',fontsize=9,fontweight='bold',color='#1c5e20')
+box(ax,0.02,0.72,0.28,0.17,'Inputs','$\\bar{x}_{ij}$: benefit $x_{ij}/\\mathrm{max}_{i}\\, x_{ij}$\ncost $\\mathrm{min}_{i}\\, x_{ij}/x_{ij}$\n$\\bar{w}_j$ from Eq. 14','#2f6db5','#eaf1fb')
+box(ax,0.02,0.49,0.28,0.12,'WSM component','$Q_i^{WSM}=\\sum_j \\bar{w}_j\\,\\bar{x}_{ij}$  (Eq. 15)','#7b3fa0','#f4ecf8')
+box(ax,0.02,0.30,0.28,0.12,'WPM component','$Q_i^{WPM}=\\prod_j \\bar{x}_{ij}^{\\,\\bar{w}_j}$  (Eq. 16)','#d9771f','#fdf1e6')
+box(ax,0.36,0.38,0.27,0.17,'WASPAS score','$Q_i=\\lambda Q_i^{WSM}+(1-\\lambda)Q_i^{WPM}$ (Eq. 17)\nEq. 18 evaluated on frozen labels\nλ = 0.50 used (Eq. 18 minimum at 0.30)','#1c7a5a','#e8f5ef')
+box(ax,0.36,0.10,0.27,0.17,'Target and reference rule','τ$_1$, τ$_2$: training tertiles of $Q_i$\ny = 0 if $Q_i$<τ$_1$; 2 if $Q_i$>τ$_2$; else 1\nexact rule (Eq. 25)','#8a5a00','#fff7e0')
+box(ax,0.69,0.72,0.29,0.17,'Leakage-controlled features','$\\varphi_i^{LC}=[\\bar{x}_{i1},\\ldots,\\bar{x}_{in}]$\n$Q_i$ and $\\bar{w}$ block withheld\nStandardScaler (training fit)','#1f3b73','#eef2fa')
+box(ax,0.69,0.44,0.29,0.18,'Base learners (Eq. 20)','XGBoost | LightGBM | MLP\nRandom Forest | Extra Trees\ninner 5-fold out-of-fold probabilities','#b3303a','#fbeaea')
+box(ax,0.69,0.23,0.29,0.14,'Meta-learner','$\\psi_i$ (Eq. 21) → multinomial\nlogistic regression (Eqs. 22–23)','#555555','#f2f2f2')
+box(ax,0.69,0.03,0.29,0.13,'Output','$\\hat{y}_i$ $\in$ {Inefficient, Moderate, Optimized}\nand class probabilities','#3d7a2a','#edf6e9')
+arr(ax,(0.16,0.72),(0.16,0.61)); arr(ax,(0.16,0.49),(0.16,0.42)); arr(ax,(0.30,0.55),(0.36,0.50)); arr(ax,(0.30,0.36),(0.36,0.43))
+arr(ax,(0.495,0.38),(0.495,0.27),c='#8a5a00'); arr(ax,(0.30,0.83),(0.69,0.81),c='#1f3b73'); arr(ax,(0.835,0.72),(0.835,0.62)); arr(ax,(0.835,0.44),(0.835,0.37)); arr(ax,(0.835,0.23),(0.835,0.16))
+arr(ax,(0.63,0.20),(0.69,0.30),c='#8a5a00',ls='--'); ax.text(0.585,0.305,'labels y\n(training)',fontsize=5.6,color='#8a5a00',ha='center')
+ax.plot([0.63,0.69],[0.47,0.53],color='#b3303a',lw=1,ls=':'); ax.text(0.66,0.535,'×',fontsize=8,color='#b3303a',ha='center'); ax.text(0.655,0.575,'not a feature',fontsize=5.4,color='#b3303a',ha='center')
+save(fig,'Figure3')
